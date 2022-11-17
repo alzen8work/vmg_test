@@ -13,4 +13,4 @@ then open the given localhost:port at the browser (will prompt at console after 
 
 - for UI responsive template - https://flowbite-vue.com/pages/getting-started.html
 - for API intergration axios - https://axios-http.com/docs/api_intro
-- 
+- repository - https://github.com/alzen8work/vmg_test
