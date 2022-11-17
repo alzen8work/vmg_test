@@ -1,86 +1,79 @@
-<script setup>
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
+<script>
+  import '@/index.css'
+  import axios from 'axios'
+  import { Input,Button } from 'flowbite-vue'
+  
+  export default {
+    data () {
+      return {
+        title: 'some title',
+        body: 'remove text to check validation',
+      }
+    },
+    components: {
+      Button,Input
+    },
+    mounted() {
+      console.log(`the component is now mounted.`)
+    },
+    created() {
+      console.log(`the component is now created.`)
+    },
+    methods:{
+      async fetchUsers() {        
+        try {
+          const response = await axios.get('https://gorest.co.in/public/v2/users');
+          console.log(response);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      CreateUserPost() {  
+        
+        let token = '7dc1ac295382e25b1f9116aa4a32d63705b7e1324a65d27d0402fd70f4a1cadf';
+          axios({
+            method: 'post',
+            url: 'https://gorest.co.in/public/v2/users/24/posts',
+            headers: { 
+              "Content-Type": "multipart/form-data",
+              'Authorization': 'Bearer '+token
+            },
+            data: {
+              title: this.title,
+              body: this.body,
+            }
+          })
+          .then(function (response) {
+            console.log(response.data);
+            let obj1 = response.data;
+            let html = '';
+            Object.keys(obj1).forEach(function(key) {
+                html += key + ' : ' + obj1[key] + '\n';
+            });
+            alert(html);
+           
+          })
+          .catch(function (error){
+            let obj = error.response.data
+            Object.keys(obj).forEach(function(key) {
+                if( obj[key]['field'] == 'body'){
+                  alert('body ' + obj[key]['message']);
+                }
+                if( obj[key]['field'] == 'title'){
+                  alert('title ' + obj[key]['message']);
+                }
+            });
+          });
+      }        
+    }
+  }
 </script>
 
 <template>
-  <WelcomeItem>
-    <template #icon>
-      <DocumentationIcon />
-    </template>
-    <template #heading>Documentation</template>
-
-    Vue’s
-    <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-    provides you with all information you need to get started.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <ToolingIcon />
-    </template>
-    <template #heading>Tooling</template>
-
-    This project is served and bundled with
-    <a href="https://vitejs.dev/guide/features.html" target="_blank" rel="noopener">Vite</a>. The
-    recommended IDE setup is
-    <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">VSCode</a> +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank" rel="noopener">Volar</a>. If
-    you need to test your components and web pages, check out
-    <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
-
-    <br />
-
-    More instructions are available in <code>README.md</code>.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <EcosystemIcon />
-    </template>
-    <template #heading>Ecosystem</template>
-
-    Get official tools and libraries for your project:
-    <a href="https://pinia.vuejs.org/" target="_blank" rel="noopener">Pinia</a>,
-    <a href="https://router.vuejs.org/" target="_blank" rel="noopener">Vue Router</a>,
-    <a href="https://test-utils.vuejs.org/" target="_blank" rel="noopener">Vue Test Utils</a>, and
-    <a href="https://github.com/vuejs/devtools" target="_blank" rel="noopener">Vue Dev Tools</a>. If
-    you need more resources, we suggest paying
-    <a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">Awesome Vue</a>
-    a visit.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <CommunityIcon />
-    </template>
-    <template #heading>Community</template>
-
-    Got stuck? Ask your question on
-    <a href="https://chat.vuejs.org" target="_blank" rel="noopener">Vue Land</a>, our official
-    Discord server, or
-    <a href="https://stackoverflow.com/questions/tagged/vue.js" target="_blank" rel="noopener"
-      >StackOverflow</a
-    >. You should also subscribe to
-    <a href="https://news.vuejs.org" target="_blank" rel="noopener">our mailing list</a> and follow
-    the official
-    <a href="https://twitter.com/vuejs" target="_blank" rel="noopener">@vuejs</a>
-    twitter account for latest news in the Vue world.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <SupportIcon />
-    </template>
-    <template #heading>Support Vue</template>
-
-    As an independent project, Vue relies on community backing for its sustainability. You can help
-    us by
-    <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
-  </WelcomeItem>
+  <span>
+      <Input placeholder="enter your Title" label="Title" v-model="this.title" class="text-black"/>
+      <Input placeholder="enter your Body Text" label="Body Text" v-model="this.body" class="text-black"/>
+      <Button color="default"  class="w-full mt-9" @click="CreateUserPost">Submit</Button>
+      <p class="w-full mt-9" style="color:blue">Resize browser to check responsive</p>
+  </span>
 </template>
